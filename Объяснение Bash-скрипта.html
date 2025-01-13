@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Объяснение Bash-скрипта</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Объяснение Bash-скрипта</h1>
+  <h2>1. Шебанг</h2>
+  <p><code>#!/bin/bash</code>: Указывает, что скрипт должен быть выполнен с использованием интерпретатора Bash.</p>
+
+  <h2>2. Получение системной информации</h2>
+  <p>Каждая из следующих строк присваивает переменной значение, полученное из различных команд.</p>
+  <ul>
+      <li><code>HOSTNAME=$(hostname)</code>: Хранит имя хоста, полученное командой <code>hostname</code>.</li>
+      <li><code>TIMEZONE=$(cat /etc/timezone)</code>: Читает текущую временную зону из файла <code>/etc/timezone</code>.</li>
+      <li><code>USER=$(whoami)</code>: Содержит имя текущего пользователя, полученное с помощью команды <code>whoami</code>.</li>
+      <li><code>OS=$(lsb_release -d | cut -f2)</code>: Получает описание операционной системы, используя <code>lsb_release -d</code> и извлекая второе поле с помощью <code>cut</code>.</li>
+      <li><code>DATE=$(date +"%d %B %Y %H:%M:%S")</code>: Сохраняет текущую дату и время в формате "день месяц год часы:минуты:секунды".</li>
+      <li><code>UPTIME=$(uptime -p)</code>: Получает время работы системы в удобочитаемом формате.</li>
+      <li><code>UPTIME_SEC=$(cat /proc/uptime | cut -d' ' -f1)</code>: Читает время работы системы в секундах из файла <code>/proc/uptime</code>.</li>
+      <li><code>IP=$(hostname -I | awk '{print $1}')</code>: Получает IP-адрес, используя <code>hostname -I</code> и извлекая первый адрес с помощью <code>awk</code>.</li>
+      <li><code>MASK=$(ifconfig | grep -w 'Mask' | awk '{print $4}')</code>: Получает маску подсети, используя <code>ifconfig</code>, фильтруя строки с <code>Mask</code> и извлекая четвертое поле.</li>
+      <li><code>GATEWAY=$(ip route | grep default | awk '{print $3}')</code>: Получает адрес шлюза по умолчанию, используя <code>ip route</code>.</li>
+      <li><code>RAM_TOTAL=$(free -g | awk '/^Mem:/{print $2}')</code>: Получает общее количество оперативной памяти в гигабайтах.</li>
+      <li><code>RAM_USED=$(free -g | awk '/^Mem:/{print $3}')</code>: Получает объем используемой оперативной памяти.</li>
+      <li><code>RAM_FREE=$(free -g | awk '/^Mem:/{print $4}')</code>: Получает объем свободной оперативной памяти.</li>
+      <li><code>SPACE_ROOT=$(df -m / | tail -1 | awk '{print $2}')</code>: Получает общий объем дискового пространства в корневом разделе.</li>
+      <li><code>SPACE_ROOT_USED=$(df -m / | tail -1 | awk '{print $3}')</code>: Получает объем использованного дискового пространства в корневом разделе.</li>
+      <li><code>SPACE_ROOT_FREE=$(df -m / | tail -1 | awk '{print $4}')</code>: Получает объем свободного дискового пространства в корневом разделе.</li>
+  </ul>
+
+  <h2>3. Вывод информации</h2>
+  <p>Каждая из следующих строк выводит информацию на экран.</p>
+  <ul>
+      <li><code>echo "HOSTNAME = $HOSTNAME"</code>: Выводит имя хоста.</li>
+      <li><code>echo "TIMEZONE = $TIMEZONE"</code>: Выводит временную зону.</li>
+      <li><code>echo "USER = $USER"</code>: Выводит имя пользователя.</li>
+      <li><code>echo "OS = $OS"</code>: Выводит информацию об операционной системе.</li>
+      <li><code>echo "DATE = $DATE"</code>: Выводит текущую дату и время.</li>
+      <li><code>echo "UPTIME = $UPTIME"</code>: Выводит время работы системы.</li>
+      <li><code>echo "UPTIME_SEC = $UPTIME_SEC"</code>: Выводит время работы системы в секундах.</li>
+      <li><code>echo "IP = $IP"</code>: Выводит IP-адрес.</li>
+      <li><code>echo "MASK = $MASK"</code>: Выводит маску подсети.</li>
+      <li><code>echo "GATEWAY = $GATEWAY"</code>: Выводит адрес шлюза.</li>
+      <li><code>echo "RAM_TOTAL = ${RAM_TOTAL}.000 GB"</code>: Выводит общее количество оперативной памяти.</li>
+      <li><code>echo "RAM_USED = ${RAM_USED}.000 GB"</code>: Выводит объем используемой оперативной памяти.</li>
+      <li><code>echo "RAM_FREE = ${RAM_FREE}.000 GB"</code>: Выводит объем свободной оперативной памяти.</li>
+      <li><code>echo "SPACE_ROOT = ${SPACE_ROOT}.00 MB"</code>: Выводит общий объем дискового пространства в корневом разделе.</li>
+      <li><code>echo "SPACE_ROOT_USED = ${SPACE_ROOT_USED}.00 MB"</code>: Выводит объем использованного дискового пространства.</li>
+      <li><code>echo "SPACE_ROOT_FREE = ${SPACE_ROOT_FREE}.00 MB"</code>: Выводит объем свободного дискового пространства.</li>
+  </ul>
+
+  <h2>4. Сохранение данных в файл</h2>
+  <ul>
+      <li><code>read -p "Сохранить данные в файл? (Y/N): " choice</code>: Запрашивает у пользователя, хочет ли он сохранить данные в файл.</li>
+      <li><code>if [[ "$choice" =~ ^[Yy]$ ]]; then</code>: Проверяет, введен ли символ <code>Y</code> или <code>y</code>.</li>
+      <li><code>TIMESTAMP=$(date +"%d_%m_%y_%H_%M_%S")</code>: Создает временную метку для имени файла.</li>
+      <li><code>echo "Данные сохранены в файл $TIMESTAMP.status"</code>: Уведомляет пользователя о сохранении данных.</li>
+      <li><code>{ ... } > "$TIMESTAMP.status"</code>: Сохраняет все собранные данные в файл с именем, основанным на временной метке.</li>
+  </ul>
+
+  <h2>5. Закрывающие скобки</h2>
+  <p><code>fi</code>: Завершает условный блок <code>if</code>.</p>
+
+  <h2>Итог</h2>
+  <p>Этот скрипт собирает и выводит информацию о системе, а затем предлагает пользователю сохранить эти данные в файл, если он этого хочет. Каждая команда выполняет конкретную задачу.</p>
+</body>
+</html>
