@@ -37,3 +37,22 @@ do
     echo "${Array[$i]}"
 done
 
+
+
+Array3=("gazdiev" "ilishan" 16 8 2002)
+
+echo ${Array3[@]}
+echo ${!Array3[@]}
+echo ${Array3[1]}
+echo ${Array[4]}
+
+echo ${#Array3[@]}
+
+echo ${#Array3[1]}
+
+echo ${#Array3[4]}
+
+for i in ${!Array3[@]}
+do 
+    echo ${Array3[$i]}
+done
